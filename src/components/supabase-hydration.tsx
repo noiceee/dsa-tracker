@@ -20,7 +20,7 @@ export function SupabaseHydration() {
       if (user) {
         const { data, error } = await supabase
           .from("user_progress")
-          .select("solved_slugs, solved_at")
+          .select("solved_slugs, solved_at, pace_months")
           .eq("user_id", user.id)
           .single();
 
@@ -29,7 +29,7 @@ export function SupabaseHydration() {
           dispatch(hydrateFromStorage({
             solvedSlugs: data.solved_slugs,
             solvedAt: data.solved_at,
-            paceMonths: 4, // default
+            paceMonths: data.pace_months ?? 4,
           }));
         }
       }

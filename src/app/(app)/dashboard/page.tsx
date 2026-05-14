@@ -1,49 +1,58 @@
 "use client";
 
 import { useMemo } from "react";
-import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import { clearProgress } from "@/store/tracker-slice";
+import { useAppSelector } from "@/store/hooks";
 import { problems, type Difficulty } from "@/data/problems";
-import { countByDifficulty, estimateDailyTarget, buildTopicSummaries, DIFFICULTY_LABEL } from "@/lib/problem-math";
+import { countByDifficulty, estimateDailyTarget, computeStreak, DIFFICULTY_LABEL } from "@/lib/problem-math";
 import { ProgressCalendar } from "@/components/progress-calendar";
 
+/**
+ * Pick the "next problem" the user should solve.
+ * Returns the first unsolved problem in the roadmap order.
+ * Falls back to the first problem if all are solved.
+ */
+function getNextProblem(solvedSlugs: Record<string, boolean>) {
+  const next = problems.find((p) => !solvedSlugs[p.slug]);
+  return next ?? problems[0];
+}
+
 export default function DashboardPage() {
-  const dispatch = useAppDispatch();
   const solvedSlugs = useAppSelector((state) => state.tracker.solvedSlugs);
   const solvedAt = useAppSelector((state) => state.tracker.solvedAt);
   const paceMonths = useAppSelector((state) => state.tracker.paceMonths);
 
   const solvedCount = useMemo(() => Object.keys(solvedSlugs).length, [solvedSlugs]);
-  const streak = useMemo(() => {
-    // Basic streak calculation for UI mapping
-    const today = new Date().toISOString().split("T")[0];
-    return solvedAt[today] ? 1 : 0; // simplistic for now, replace with actual streak logic
-  }, [solvedAt]);
+  const streak = useMemo(() => computeStreak(solvedAt), [solvedAt]);
   
   const completion = useMemo(
     () => (problems.length ? Math.round((solvedCount / problems.length) * 100) : 0),
-    [problems.length, solvedCount]
+    [solvedCount]
   );
   
   const dailyTarget = useMemo(
     () => estimateDailyTarget(solvedCount, problems.length, paceMonths),
-    [paceMonths, problems.length, solvedCount]
+    [paceMonths, solvedCount]
   );
   
   const difficultyStats = useMemo(
     () => countByDifficulty(problems, solvedSlugs),
-    [problems, solvedSlugs]
+    [solvedSlugs]
   );
 
+  const potd = useMemo(() => getNextProblem(solvedSlugs), [solvedSlugs]);
+  const potdDiffLabel = DIFFICULTY_LABEL[potd.difficulty];
+  const potdDiffColor = potd.difficulty === "E" ? "text-success bg-success/10 border-success/20" : potd.difficulty === "M" ? "text-warning bg-warning/10 border-warning/20" : "text-error bg-error/10 border-error/20";
+  const isPotdSolved = Boolean(solvedSlugs[potd.slug]);
+
   return (
-    <div className="max-w-[1280px] mx-auto space-y-8 px-4 md:px-8">
+    <div className="max-w-container-max-width mx-auto p-margin-mobile md:p-margin-desktop space-y-8">
       {/* Page Header */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-2">
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
         <div>
-          <h2 className="font-headline-xl text-headline-xl-mobile md:text-headline-xl text-on-background tracking-tight">Overview</h2>
-          <p className="font-body-md text-body-md text-on-surface-variant mt-2">Track your daily algorithm mastery.</p>
+          <h2 className="font-display-lg text-headline-lg-mobile md:text-headline-lg text-on-background tracking-tight">Overview</h2>
+          <p className="font-body-md text-body-md text-on-surface-variant mt-1">Track your daily algorithm mastery.</p>
         </div>
-        <div className="font-label-sm text-[13px] text-primary glass-panel px-4 py-2 rounded-full inline-flex items-center gap-2 font-medium">
+        <div className="font-button-text text-button-text text-on-surface-variant bg-surface px-4 py-2 rounded-full inline-flex items-center gap-2 border border-secondary/20">
           <span className="material-symbols-outlined" style={{ fontSize: "16px" }}>calendar_today</span>
           {new Date().toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}
         </div>
@@ -51,127 +60,91 @@ export default function DashboardPage() {
 
       {/* Top Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {/* Stat Card 1 */}
-        <div className="glass-panel rounded-3xl p-6 hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
-          <div className="flex items-center justify-between mb-4">
-            <span className="font-label-md text-[12px] text-on-surface-variant uppercase tracking-widest font-semibold">Current Streak</span>
-            <div className="p-2 bg-orange-100/50 rounded-full">
-              <span className="material-symbols-outlined text-orange-500" data-weight="fill">local_fire_department</span>
-            </div>
+        {/* Stat Card 1 — Streak */}
+        <div className="bg-surface border border-outline-variant rounded-xl p-5 hover:shadow-[0_4px_12px_rgba(0,0,0,0.05)] transition-shadow">
+          <div className="flex items-center justify-between mb-2">
+            <span className="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Current Streak</span>
+            <span className="material-symbols-outlined text-warning" data-weight="fill">local_fire_department</span>
           </div>
-          <div className="flex items-baseline gap-2 mb-6">
-            <span className="font-headline-xl text-[48px] text-on-background leading-none tracking-tight">{streak}</span>
-            <span className="font-body-md text-[14px] text-on-surface-variant">days</span>
+          <div className="flex items-baseline gap-2">
+            <span className="font-display-lg text-display-lg text-on-background leading-none">{streak}</span>
+            <span className="font-body-sm text-body-sm text-on-surface-variant">days</span>
           </div>
-          <div className="w-full bg-white/50 rounded-full h-2 shadow-inner overflow-hidden border border-white/40">
-            <div className="liquid-gradient-warning h-full rounded-full" style={{ width: `${Math.min(streak * 5, 100)}%` }}></div>
+          <div className="mt-4 w-full bg-surface-container-high rounded-full h-1.5">
+            <div className="bg-warning h-1.5 rounded-full transition-all duration-500" style={{ width: `${Math.min(streak * 5, 100)}%` }}></div>
           </div>
         </div>
 
-        {/* Stat Card 2 */}
-        <div className="glass-panel rounded-3xl p-6 hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
-          <div className="flex items-center justify-between mb-4">
-            <span className="font-label-md text-[12px] text-on-surface-variant uppercase tracking-widest font-semibold">Total Solved</span>
-            <div className="p-2 bg-blue-100/50 rounded-full">
-              <span className="material-symbols-outlined text-primary" data-weight="fill">task_alt</span>
-            </div>
+        {/* Stat Card 2 — Total Solved */}
+        <div className="bg-surface border border-outline-variant rounded-xl p-5 hover:shadow-[0_4px_12px_rgba(0,0,0,0.05)] transition-shadow">
+          <div className="flex items-center justify-between mb-2">
+            <span className="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Total Solved</span>
+            <span className="material-symbols-outlined text-secondary" data-weight="fill">task_alt</span>
           </div>
-          <div className="flex items-baseline gap-2 mb-5">
-            <span className="font-headline-xl text-[48px] text-on-background leading-none tracking-tight">{solvedCount}</span>
-            <span className="font-body-md text-[14px] text-on-surface-variant">problems</span>
+          <div className="flex items-baseline gap-2">
+            <span className="font-display-lg text-display-lg text-on-background leading-none">{solvedCount}</span>
+            <span className="font-body-sm text-body-sm text-on-surface-variant">/ {problems.length}</span>
           </div>
-          <div className="flex gap-2">
-            <span className="font-label-sm text-[11px] bg-emerald-100/60 text-emerald-700 px-3 py-1 rounded-full border border-emerald-200/50 backdrop-blur-sm">Easy: {difficultyStats["E"]?.solved || 0}</span>
-            <span className="font-label-sm text-[11px] bg-amber-100/60 text-amber-700 px-3 py-1 rounded-full border border-amber-200/50 backdrop-blur-sm">Med: {difficultyStats["M"]?.solved || 0}</span>
-            <span className="font-label-sm text-[11px] bg-rose-100/60 text-rose-700 px-3 py-1 rounded-full border border-rose-200/50 backdrop-blur-sm">Hard: {difficultyStats["H"]?.solved || 0}</span>
+          <div className="mt-4 flex gap-1">
+            <span className="font-label-md text-[10px] bg-success/10 text-success px-2 py-0.5 rounded-full">Easy: {difficultyStats["E"]?.solved || 0}</span>
+            <span className="font-label-md text-[10px] bg-warning/10 text-warning px-2 py-0.5 rounded-full">Med: {difficultyStats["M"]?.solved || 0}</span>
+            <span className="font-label-md text-[10px] bg-error/10 text-error px-2 py-0.5 rounded-full">Hard: {difficultyStats["H"]?.solved || 0}</span>
           </div>
         </div>
 
-        {/* Stat Card 3 */}
-        <div className="glass-panel rounded-3xl p-6 hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
-          <div className="flex items-center justify-between mb-4">
-            <span className="font-label-md text-[12px] text-on-surface-variant uppercase tracking-widest font-semibold">Daily Goal</span>
-            <div className="p-2 bg-emerald-100/50 rounded-full">
-              <span className="material-symbols-outlined text-emerald-500">flag</span>
-            </div>
+        {/* Stat Card 3 — Daily Goal */}
+        <div className="bg-surface border border-outline-variant rounded-xl p-5 hover:shadow-[0_4px_12px_rgba(0,0,0,0.05)] transition-shadow">
+          <div className="flex items-center justify-between mb-2">
+            <span className="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Completion</span>
+            <span className="material-symbols-outlined text-success">flag</span>
           </div>
-          <div className="flex items-baseline gap-2 mb-6">
-            <span className="font-headline-xl text-[48px] text-on-background leading-none tracking-tight">
-              {dailyTarget > 0 ? (solvedCount % dailyTarget) : 0}
-              <span className="text-3xl text-outline-variant font-medium">/{dailyTarget}</span>
-            </span>
+          <div className="flex items-baseline gap-2">
+            <span className="font-display-lg text-display-lg text-on-background leading-none">{completion}<span className="text-2xl text-outline-variant">%</span></span>
           </div>
-          <div className="w-full bg-white/50 rounded-full h-2 shadow-inner overflow-hidden border border-white/40">
-            <div className="liquid-gradient-success h-full rounded-full" style={{ width: `${dailyTarget > 0 ? ((solvedCount % dailyTarget) / dailyTarget) * 100 : 100}%` }}></div>
+          <div className="mt-4 w-full bg-surface-container-high rounded-full h-1.5">
+            <div className="bg-success h-1.5 rounded-full transition-all duration-500" style={{ width: `${completion}%` }}></div>
           </div>
         </div>
       </div>
 
-      {/* Main Bento Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Problem of the Day */}
-        <div className="lg:col-span-2 glass-panel rounded-3xl p-8 relative overflow-hidden group">
-          <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-primary/10 via-tertiary/5 to-transparent rounded-full blur-3xl -translate-y-1/2 translate-x-1/4 pointer-events-none"></div>
-          <div className="flex items-start justify-between mb-6 relative z-10">
-            <div>
-              <div className="flex items-center gap-3 mb-4">
-                <span className="font-label-md text-[12px] text-primary uppercase tracking-widest font-bold">Problem of the Day</span>
-                <span className="px-3 py-1 rounded-full bg-rose-100/80 text-rose-700 font-label-sm text-[11px] border border-rose-200/50 backdrop-blur-sm shadow-sm">Hard</span>
-              </div>
-              <h3 className="font-headline-lg text-[32px] leading-tight text-on-background mb-3">Median of Two Sorted Arrays</h3>
-              <p className="font-body-lg text-[16px] text-on-surface-variant max-w-2xl leading-relaxed">Given two sorted arrays nums1 and nums2 of size m and n respectively, return the median of the two sorted arrays. The overall run time complexity should be O(log (m+n)).</p>
+      {/* Problem of the Day — Dynamic */}
+      <div className="bg-surface border border-outline-variant rounded-xl p-6 relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-secondary/10 to-transparent rounded-full blur-3xl -translate-y-1/2 translate-x-1/4 pointer-events-none"></div>
+        <div className="flex items-start justify-between mb-6 relative z-10">
+          <div>
+            <div className="flex items-center gap-2 mb-2">
+              <span className="font-label-md text-label-md text-secondary uppercase tracking-wider">Up Next</span>
+              <span className={`px-2 py-0.5 rounded-full font-label-md text-[10px] border ${potdDiffColor}`}>{potdDiffLabel}</span>
+              {isPotdSolved && (
+                <span className="px-2 py-0.5 rounded-full font-label-md text-[10px] border border-success/20 bg-success/10 text-success flex items-center gap-1">
+                  <span className="material-symbols-outlined" style={{ fontSize: "12px" }}>check</span>Solved
+                </span>
+              )}
             </div>
-          </div>
-          <div className="flex items-center gap-4 mt-8 relative z-10">
-            <button className="px-6 py-3 liquid-gradient text-white rounded-xl font-label-md text-[14px] shadow-lg shadow-primary/20 hover:shadow-primary/30 transition-all duration-200 flex items-center gap-2 hover:scale-[1.02] active:scale-[0.98]">
-              <span className="material-symbols-outlined" style={{ fontSize: "20px" }}>code</span>
-              Solve Now
-            </button>
-            <button className="px-5 py-3 bg-white/60 text-on-surface-variant border border-white rounded-xl font-label-md text-[14px] hover:bg-white/80 hover:text-primary transition-all duration-200 flex items-center gap-2 backdrop-blur-sm shadow-sm hover:shadow-md">
-              <span className="material-symbols-outlined" style={{ fontSize: "20px" }}>lightbulb</span>
-              View Hints
-            </button>
-          </div>
-          <div className="mt-8 pt-5 border-t border-white/60 flex flex-wrap gap-6 text-[13px] text-on-surface-variant font-label-sm">
-            <span className="flex items-center gap-1.5"><span className="material-symbols-outlined text-outline" style={{ fontSize: "18px" }}>sell</span> Array, Binary Search, Divide and Conquer</span>
-            <span className="flex items-center gap-1.5"><span className="material-symbols-outlined text-emerald-500" style={{ fontSize: "18px" }}>thumb_up</span> <span className="font-medium text-on-surface">92%</span> Success Rate</span>
+            <h3 className="font-display-lg text-headline-lg-mobile md:text-[28px] md:leading-[36px] font-bold text-on-background mb-2">{potd.title}</h3>
+            <p className="font-body-md text-body-md text-on-surface-variant">
+              Topic: {potd.topic} · Practice this problem to stay on track with your daily goals.
+            </p>
           </div>
         </div>
-
-        {/* Upcoming Contests */}
-        <div className="glass-panel rounded-3xl p-6 flex flex-col relative overflow-hidden">
-          <div className="absolute -right-10 -bottom-10 w-40 h-40 bg-gradient-to-tl from-primary/10 to-transparent rounded-full blur-2xl pointer-events-none"></div>
-          <div className="flex items-center justify-between mb-6 relative z-10">
-            <h3 className="font-headline-lg-mobile text-[20px] text-on-background">Upcoming Contests</h3>
-            <button className="w-8 h-8 rounded-full flex items-center justify-center hover:bg-white/50 text-outline hover:text-primary transition-colors"><span className="material-symbols-outlined">more_horiz</span></button>
-          </div>
-          <div className="flex flex-col gap-3 flex-1 relative z-10">
-            <div className="p-4 bg-white/40 border border-white/60 rounded-2xl hover:bg-white/60 hover:shadow-md hover:-translate-y-0.5 transition-all cursor-pointer backdrop-blur-sm group">
-              <div className="flex justify-between items-start mb-2">
-                <span className="font-label-md text-[15px] text-on-background group-hover:text-primary transition-colors">Weekly Contest 369</span>
-                <span className="font-label-sm text-[11px] bg-primary/10 text-primary px-2.5 py-1 rounded-full font-medium">In 2 days</span>
-              </div>
-              <p className="font-body-md text-[13px] text-on-surface-variant flex items-center gap-1.5">
-                <span className="material-symbols-outlined text-[14px] opacity-70">event</span> Sunday, 8:00 AM PT
-              </p>
-            </div>
-            <div className="p-4 bg-white/20 border border-white/40 rounded-2xl hover:bg-white/50 hover:shadow-md hover:-translate-y-0.5 transition-all cursor-pointer backdrop-blur-sm group">
-              <div className="flex justify-between items-start mb-2">
-                <span className="font-label-md text-[15px] text-on-background group-hover:text-primary transition-colors">Biweekly Contest 116</span>
-                <span className="font-label-sm text-[11px] bg-surface-variant/50 text-on-surface-variant px-2.5 py-1 rounded-full backdrop-blur-sm">In 5 days</span>
-              </div>
-              <p className="font-body-md text-[13px] text-on-surface-variant flex items-center gap-1.5">
-                <span className="material-symbols-outlined text-[14px] opacity-70">event</span> Saturday, 7:30 AM PT
-              </p>
-            </div>
-          </div>
-          <button className="w-full mt-6 py-3 text-primary font-label-md text-[14px] bg-white/30 border border-white/50 hover:bg-white/60 rounded-xl transition-all backdrop-blur-sm shadow-sm relative z-10">
-            View All Calendar
-          </button>
+        <div className="flex items-center gap-4 mt-6 relative z-10">
+          <a
+            href={potd.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="px-6 py-2.5 bg-primary text-on-primary rounded-lg font-button-text text-button-text hover:bg-surface-tint transition-colors duration-100 flex items-center gap-2"
+          >
+            <span className="material-symbols-outlined" style={{ fontSize: "18px" }}>code</span>
+            Solve Now
+          </a>
+        </div>
+        <div className="mt-6 pt-4 border-t border-outline-variant/50 flex gap-4 text-sm text-on-surface-variant font-label-md">
+          <span className="flex items-center gap-1"><span className="material-symbols-outlined" style={{ fontSize: "16px" }}>sell</span>{potd.topic}</span>
+          <span className="flex items-center gap-1"><span className="material-symbols-outlined" style={{ fontSize: "16px" }}>speed</span>{potdDiffLabel} Difficulty</span>
         </div>
       </div>
       
-      {/* Activity Graph Placeholder */}
+      {/* Activity Graph */}
       <ProgressCalendar />
       
     </div>

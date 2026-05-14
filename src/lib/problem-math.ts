@@ -15,6 +15,7 @@ export const DIFFICULTY_LABEL: Record<Difficulty, string> = {
 };
 
 export function clampPace(value: number): PaceMonths {
+  if (value === 12) return 12;
   if (value <= 3) return 3;
   if (value >= 6) return 6;
   return value as PaceMonths;
@@ -100,30 +101,82 @@ export function countByDifficulty(
 }
 
 export function computeStreak(solvedAt: Record<string, string>): number {
+  return computeActivityStats(solvedAt).currentStreak;
+}
+
+export function computeActivityStats(solvedAt: Record<string, string>) {
   if (Object.keys(solvedAt).length === 0) {
-    return 0;
+    return { currentStreak: 0, longestStreak: 0, solvedThisWeek: 0, solvedThisMonth: 0, totalSolved: 0 };
   }
 
-  const solvedDays = new Set(
-    Object.values(solvedAt)
-      .filter(Boolean)
-      .map((value) => value.slice(0, 10))
-  );
+  // Helper: format a Date as local YYYY-MM-DD (no UTC conversion)
+  const toLocalDate = (d: Date) =>
+    `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
 
-  let streak = 0;
+  const validDates = Object.values(solvedAt)
+    .filter(Boolean)
+    .map((iso) => new Date(iso));
+
+  const solvedDays = new Set(validDates.map(toLocalDate));
+
+  // Current Streak
+  let currentStreak = 0;
   const cursor = new Date();
   cursor.setHours(0, 0, 0, 0);
-
   while (true) {
-    const iso = cursor.toISOString().slice(0, 10);
-    if (!solvedDays.has(iso)) {
-      break;
-    }
-    streak += 1;
+    const localKey = toLocalDate(cursor);
+    if (!solvedDays.has(localKey)) break;
+    currentStreak += 1;
     cursor.setDate(cursor.getDate() - 1);
   }
 
-  return streak;
+  // Longest Streak
+  const sortedDates = Array.from(solvedDays).sort((a, b) => new Date(b).getTime() - new Date(a).getTime());
+  let longestStreak = 0;
+  let tempStreak = 0;
+  let prevDate: Date | null = null;
+  
+  // Sort descending
+  for (const dateStr of sortedDates) {
+    const d = new Date(dateStr);
+    d.setHours(0, 0, 0, 0);
+    if (!prevDate) {
+      tempStreak = 1;
+    } else {
+      const diff = Math.floor((prevDate.getTime() - d.getTime()) / (1000 * 60 * 60 * 24));
+      if (diff === 1) {
+        tempStreak++;
+      } else if (diff > 1) {
+        longestStreak = Math.max(longestStreak, tempStreak);
+        tempStreak = 1;
+      }
+    }
+    prevDate = d;
+  }
+  longestStreak = Math.max(longestStreak, tempStreak);
+
+  // Time-based stats
+  const now = new Date();
+  const weekAgo = new Date(now);
+  weekAgo.setDate(now.getDate() - 7);
+  const monthAgo = new Date(now);
+  monthAgo.setDate(now.getDate() - 30);
+
+  let solvedThisWeek = 0;
+  let solvedThisMonth = 0;
+
+  for (const d of validDates) {
+    if (d >= weekAgo) solvedThisWeek++;
+    if (d >= monthAgo) solvedThisMonth++;
+  }
+
+  return {
+    currentStreak,
+    longestStreak,
+    solvedThisWeek,
+    solvedThisMonth,
+    totalSolved: validDates.length,
+  };
 }
 
 export function estimateDailyTarget(

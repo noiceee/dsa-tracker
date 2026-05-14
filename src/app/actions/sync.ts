@@ -5,7 +5,8 @@ import { cookies } from "next/headers";
 
 export async function syncProgressToSupabase(
   solvedSlugs: Record<string, true>,
-  solvedAt: Record<string, string>
+  solvedAt: Record<string, string>,
+  paceMonths: number = 4
 ) {
   const cookieStore = await cookies();
   const supabase = createClient(cookieStore);
@@ -21,6 +22,7 @@ export async function syncProgressToSupabase(
       user_id: user.id,
       solved_slugs: solvedSlugs,
       solved_at: solvedAt,
+      pace_months: paceMonths,
       updated_at: new Date().toISOString()
     });
 

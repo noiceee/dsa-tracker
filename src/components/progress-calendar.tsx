@@ -2,6 +2,7 @@
 
 import { useMemo } from "react";
 import { useAppSelector } from "@/store/hooks";
+import { computeActivityStats } from "@/lib/problem-math";
 
 // Generate last 365 days
 function generateLastYearDates() {
@@ -31,7 +32,7 @@ function generateLastYearDates() {
 export function ProgressCalendar() {
   const solvedAt = useAppSelector((state) => state.tracker.solvedAt);
 
-  const { dates, activityMap, maxSolved } = useMemo(() => {
+  const { dates, activityMap, maxSolved, stats } = useMemo(() => {
     const generated = generateLastYearDates();
     
     // Create activity map: 'YYYY-MM-DD' -> count
@@ -48,7 +49,9 @@ export function ProgressCalendar() {
       if (count > max) max = count;
     });
 
-    return { dates: generated, activityMap: map, maxSolved: max };
+    const calculatedStats = computeActivityStats(solvedAt);
+
+    return { dates: generated, activityMap: map, maxSolved: max, stats: calculatedStats };
   }, [solvedAt]);
 
   const weeks: Date[][] = [];
@@ -62,12 +65,12 @@ export function ProgressCalendar() {
   });
 
   const getIntensityClass = (count: number) => {
-    if (count === 0) return "bg-black/5 border border-black/5";
+    if (count === 0) return "bg-surface-container-high border border-outline-variant/30";
     const intensity = count / maxSolved;
-    if (intensity < 0.25) return "bg-primary/30";
-    if (intensity < 0.5) return "bg-primary/60";
-    if (intensity < 0.75) return "bg-primary/90";
-    return "bg-primary shadow-[0_0_8px_rgba(0,74,198,0.4)]";
+    if (intensity < 0.25) return "bg-secondary/30";
+    if (intensity < 0.5) return "bg-secondary/60";
+    if (intensity < 0.75) return "bg-secondary/90";
+    return "bg-secondary";
   };
 
   const getFormatDate = (d: Date) => {
@@ -75,17 +78,36 @@ export function ProgressCalendar() {
   };
 
   return (
-    <div className="glass-panel rounded-3xl p-8 mb-8">
-      <div className="flex items-center justify-between mb-8">
-        <h3 className="font-headline-lg-mobile text-[24px] text-on-background">Activity History</h3>
-        <div className="flex items-center gap-2.5 font-label-sm text-[13px] text-on-surface-variant bg-white/40 px-3 py-1.5 rounded-full border border-white/50 backdrop-blur-sm">
+    <div className="bg-surface border border-outline-variant rounded-xl p-6 mb-8">
+      <div className="flex items-center justify-between mb-6">
+        <h3 className="font-headline-lg-mobile text-headline-lg-mobile text-on-background">Activity History</h3>
+        <div className="flex items-center gap-2 font-label-md text-label-md text-on-surface-variant bg-surface-container-low px-3 py-1.5 rounded-full border border-outline-variant hidden sm:flex">
           <span>Less</span>
-          <div className="w-3.5 h-3.5 rounded-[4px] bg-black/5 border border-black/5"></div>
-          <div className="w-3.5 h-3.5 rounded-[4px] bg-primary/30"></div>
-          <div className="w-3.5 h-3.5 rounded-[4px] bg-primary/60"></div>
-          <div className="w-3.5 h-3.5 rounded-[4px] bg-primary/90"></div>
-          <div className="w-3.5 h-3.5 rounded-[4px] bg-primary shadow-[0_0_8px_rgba(0,74,198,0.4)]"></div>
+          <div className="w-3.5 h-3.5 rounded-[4px] bg-surface-container-high border border-outline-variant/30"></div>
+          <div className="w-3.5 h-3.5 rounded-[4px] bg-secondary/30"></div>
+          <div className="w-3.5 h-3.5 rounded-[4px] bg-secondary/60"></div>
+          <div className="w-3.5 h-3.5 rounded-[4px] bg-secondary/90"></div>
+          <div className="w-3.5 h-3.5 rounded-[4px] bg-secondary"></div>
           <span>More</span>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+        <div className="bg-surface-container-low p-4 rounded-lg border border-outline-variant/50">
+          <div className="font-label-md text-on-surface-variant mb-1">Total Solved</div>
+          <div className="font-display-md text-primary">{stats.totalSolved}</div>
+        </div>
+        <div className="bg-surface-container-low p-4 rounded-lg border border-outline-variant/50">
+          <div className="font-label-md text-on-surface-variant mb-1">Solved This Week</div>
+          <div className="font-display-md text-secondary">{stats.solvedThisWeek}</div>
+        </div>
+        <div className="bg-surface-container-low p-4 rounded-lg border border-outline-variant/50">
+          <div className="font-label-md text-on-surface-variant mb-1">Current Streak</div>
+          <div className="font-display-md text-warning">{stats.currentStreak} <span className="text-sm">days</span></div>
+        </div>
+        <div className="bg-surface-container-low p-4 rounded-lg border border-outline-variant/50">
+          <div className="font-label-md text-on-surface-variant mb-1">Longest Streak</div>
+          <div className="font-display-md text-success">{stats.longestStreak} <span className="text-sm">days</span></div>
         </div>
       </div>
       

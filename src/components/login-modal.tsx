@@ -25,30 +25,28 @@ export function LoginModal({ isOpen, onClose }: Props) {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 backdrop-blur-md bg-canvas/80">
-      <div className="relative w-full max-w-md overflow-hidden rounded-3xl border border-border/40 bg-panel shadow-2xl">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 backdrop-blur-md bg-background/80">
+      <div className="relative w-full max-w-md overflow-hidden rounded-xl border border-outline-variant bg-surface shadow-2xl">
         <button 
           onClick={onClose}
-          className="absolute right-4 top-4 text-textMuted hover:text-text"
+          className="absolute right-4 top-4 p-2 rounded-full text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors"
         >
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-          </svg>
+          <span className="material-symbols-outlined">close</span>
         </button>
         
         <div className="p-8 text-center">
-          <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-2xl bg-accent/10 text-3xl">
+          <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-xl bg-secondary/10 text-3xl">
             🚀
           </div>
-          <h2 className="mb-2 text-2xl font-black text-text">Join DSA Tracker</h2>
-          <p className="mb-8 text-sm text-textMuted">
+          <h2 className="mb-2 font-display-lg text-headline-lg-mobile text-on-background">Join DSA Tracker</h2>
+          <p className="mb-8 font-body-md text-body-md text-on-surface-variant">
             Sign in to instantly sync your progress across devices and never lose your streak.
           </p>
 
           <button
             onClick={handleGoogleLogin}
             disabled={isLoading}
-            className="flex w-full items-center justify-center gap-3 rounded-xl bg-text px-4 py-3 font-bold text-canvas transition hover:opacity-90 disabled:opacity-50"
+            className="flex w-full items-center justify-center gap-3 rounded-lg bg-primary px-4 py-3 font-button-text text-button-text text-on-primary transition hover:bg-surface-tint disabled:opacity-50"
           >
             {isLoading ? (
               <span className="animate-pulse">Connecting...</span>

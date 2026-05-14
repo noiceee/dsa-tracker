@@ -14,17 +14,17 @@ export default async function AppLayout({
   const { data: { user } } = await supabase.auth.getUser();
 
   return (
-    <div className="relative min-h-screen overflow-x-hidden bg-canvas text-text">
+    <div className="relative min-h-screen overflow-x-hidden bg-background text-on-background flex">
       <SupabaseHydration />
-      <div className="pointer-events-none fixed left-[55%] top-[4%] h-[420px] w-[420px] rounded-full bg-accent/10 blur-[90px]" />
-      <div className="pointer-events-none fixed left-[15%] top-[58%] h-[360px] w-[360px] rounded-full bg-success/10 blur-[90px]" />
-
+      
       <AppSidebar user={user} />
-      <AppHeader />
-
-      <main className="relative z-10 pb-20 pt-20 md:ml-64">
-        {children}
-      </main>
+      
+      <div className="flex-1 md:ml-64 flex flex-col min-h-screen w-full relative z-10">
+        <AppHeader user={user} />
+        <main className="flex-1">
+          {children}
+        </main>
+      </div>
     </div>
   );
 }

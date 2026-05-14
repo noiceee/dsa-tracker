@@ -2,43 +2,127 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ═══════════════════════════════════════════════════════════════
+   AlgoTrack Pro — M3 Design Tokens (Light Mode)
+   ═══════════════════════════════════════════════════════════════ */
 :root {
-  /* Stitch Light Mode */
-  --color-canvas: 247 249 251; /* #f7f9fb */
-  --color-panel: 255 255 255;
-  --color-panel-alt: 236 238 240; /* surface_container */
-  --color-text: 25 28 30; /* on_surface #191c1e */
-  --color-text-muted: 115 118 134; /* outline #737686 */
-  --color-accent: 37 99 235; /* primary #2563eb */
-  --color-accent-soft: 219 225 255; /* primary_fixed */
-  --color-success: 5 150 105;
-  --color-warning: 202 138 4;
-  --color-danger: 186 26 26; /* error #ba1a1a */
-  --color-border: 195 198 215; /* outline_variant #c3c6d7 */
+  --color-secondary: 0 88 190;
+  --color-on-secondary-container: 254 252 255;
+  --color-inverse-primary: 190 198 224;
+  --color-surface-container: 229 238 255;
+  --color-tertiary-fixed: 223 227 231;
+  --color-primary-fixed-dim: 190 198 224;
+  --color-tertiary-container: 23 28 31;
+  --color-primary-container: 19 27 46;
+  --color-on-error-container: 147 0 10;
+  --color-error-container: 255 218 214;
+  --color-surface-tint: 86 94 116;
+  --color-on-primary: 255 255 255;
+  --color-surface-container-high: 220 233 255;
+  --color-tertiary-fixed-dim: 195 199 203;
+  --color-surface-variant: 211 228 254;
+  --color-on-tertiary-container: 128 132 136;
+  --color-on-tertiary: 255 255 255;
+  --color-warning: 245 158 11;
+  --color-surface-container-low: 239 244 255;
+  --color-on-primary-container: 124 131 155;
+  --color-surface-container-lowest: 255 255 255;
+  --color-outline-variant: 198 198 205;
+  --color-secondary-fixed-dim: 173 198 255;
+  --color-surface-dim: 203 219 245;
+  --color-error: 239 68 68;
+  --color-on-tertiary-fixed-variant: 67 71 75;
+  --color-secondary-fixed: 216 226 255;
+  --color-on-surface: 11 28 48;
+  --color-on-secondary-fixed-variant: 0 67 149;
+  --color-on-tertiary-fixed: 23 28 31;
+  --color-inverse-surface: 33 49 69;
+  --color-success: 16 185 129;
+  --color-surface-glass: 255 255 255;
+  --color-on-error: 255 255 255;
+  --color-on-secondary-fixed: 0 26 66;
+  --color-outline: 118 119 125;
+  --color-surface: 248 249 255;
+  --color-primary: 0 0 0;
+  --color-on-background: 11 28 48;
+  --color-secondary-container: 33 112 228;
+  --color-inverse-on-surface: 234 241 255;
+  --color-tertiary: 0 0 0;
+  --color-on-secondary: 255 255 255;
+  --color-on-primary-fixed: 19 27 46;
+  --color-surface-container-highest: 211 228 254;
+  --color-on-primary-fixed-variant: 63 70 92;
+  --color-surface-bright: 248 249 255;
+  --color-background: 248 249 255;
+  --color-primary-fixed: 218 226 253;
+  --color-on-surface-variant: 69 70 77;
 }
 
+/* ═══════════════════════════════════════════════════════════════
+   AlgoTrack Pro — M3 Design Tokens (Dark Mode)
+   ═══════════════════════════════════════════════════════════════ */
 .dark {
-  /* Stitch Dark Mode Inference */
-  --color-canvas: 25 28 30; /* #191c1e */
-  --color-panel: 45 49 51; /* inverse_surface */
-  --color-panel-alt: 35 38 40;
-  --color-text: 247 249 251; /* #f7f9fb */
-  --color-text-muted: 195 198 215; /* outline_variant */
-  --color-accent: 180 197 255; /* inverse_primary #b4c5ff */
-  --color-accent-soft: 37 99 235; 
-  --color-success: 45 212 191;
-  --color-warning: 250 204 21;
-  --color-danger: 255 218 214; /* error_container */
-  --color-border: 115 118 134; /* outline */
+  --color-secondary: 100 165 255;
+  --color-on-secondary-container: 220 230 245;
+  --color-inverse-primary: 42 50 72;
+  --color-surface-container: 25 28 35;
+  --color-tertiary-fixed: 30 34 38;
+  --color-primary-fixed-dim: 42 50 72;
+  --color-tertiary-container: 200 205 210;
+  --color-primary-container: 185 195 215;
+  --color-on-error-container: 255 130 135;
+  --color-error-container: 60 15 12;
+  --color-surface-tint: 140 150 170;
+  --color-on-primary: 20 22 28;
+  --color-surface-container-high: 30 33 40;
+  --color-tertiary-fixed-dim: 55 60 65;
+  --color-surface-variant: 28 31 38;
+  --color-on-tertiary-container: 140 145 150;
+  --color-on-tertiary: 20 22 28;
+  --color-warning: 250 175 50;
+  --color-surface-container-low: 21 24 30;
+  --color-on-primary-container: 120 128 150;
+  --color-surface-container-lowest: 14 16 20;
+  --color-outline-variant: 55 58 66;
+  --color-secondary-fixed-dim: 20 35 80;
+  --color-surface-dim: 14 16 22;
+  --color-error: 245 100 100;
+  --color-on-tertiary-fixed-variant: 180 185 192;
+  --color-secondary-fixed: 15 22 50;
+  --color-on-surface: 210 215 225;
+  --color-on-secondary-fixed-variant: 120 175 255;
+  --color-on-tertiary-fixed: 200 205 210;
+  --color-inverse-surface: 200 210 225;
+  --color-success: 80 230 180;
+  --color-surface-glass: 20 22 28;
+  --color-on-error: 20 22 28;
+  --color-on-secondary-fixed: 190 210 245;
+  --color-outline: 110 115 125;
+  --color-surface: 17 19 24;
+  --color-primary: 225 228 235;
+  --color-on-background: 200 208 222;
+  --color-secondary-container: 35 100 210;
+  --color-inverse-on-surface: 17 20 30;
+  --color-tertiary: 220 222 228;
+  --color-on-secondary: 15 18 25;
+  --color-on-primary-fixed: 185 195 215;
+  --color-surface-container-highest: 35 38 46;
+  --color-on-primary-fixed-variant: 155 162 180;
+  --color-surface-bright: 22 25 32;
+  --color-background: 17 19 24;
+  --color-primary-fixed: 22 28 45;
+  --color-on-surface-variant: 155 160 172;
 }
 
+/* ═══════════════════════════════════════════════════════════════
+   Base Resets & Scrollbar
+   ═══════════════════════════════════════════════════════════════ */
 * {
-  border-color: rgb(var(--color-border) / 0.8);
+  border-color: rgb(var(--color-outline-variant) / 0.8);
   scrollbar-width: thin;
-  scrollbar-color: rgb(var(--color-border) / 0.5) transparent;
+  scrollbar-color: rgb(var(--color-outline-variant) / 0.5) transparent;
 }
 
-/* Webkit Scrollbar Styling */
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
@@ -49,105 +133,33 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgb(var(--color-border) / 0.5);
+  background: rgb(var(--color-outline-variant) / 0.5);
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgb(var(--color-border) / 0.8);
+  background: rgb(var(--color-outline-variant) / 0.8);
 }
 
-html,
-body {
+html, body {
   min-height: 100%;
 }
 
 body {
-  background-color: rgb(var(--color-canvas));
-  color: rgb(var(--color-text));
-  font-feature-settings: "ss01" on, "ss03" on;
+  background-color: rgb(var(--color-background));
+  color: rgb(var(--color-on-background));
+  font-feature-settings: 'ss01' on, 'ss03' on;
   text-rendering: geometricPrecision;
 }
 
-/* Material Icons */
+/* ═══════════════════════════════════════════════════════════════
+   Material Symbols
+   ═══════════════════════════════════════════════════════════════ */
 .material-symbols-outlined {
-    font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-}
-.material-symbols-outlined[data-weight="fill"] {
-    font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
 }
 
-/* Glassmorphism Utilities */
-.glass-panel {
-    background: rgba(255, 255, 255, 0.6);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    border: 1px solid rgba(255, 255, 255, 0.8);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.04);
-}
-
-.dark .glass-panel {
-    background: rgba(30, 30, 30, 0.6);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.glass-sidebar {
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.8) 0%, rgba(247, 249, 251, 0.85) 100%);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border-right: 1px solid rgba(255, 255, 255, 0.6);
-}
-
-.dark .glass-sidebar {
-    background: linear-gradient(180deg, rgba(30, 30, 30, 0.8) 0%, rgba(20, 20, 20, 0.85) 100%);
-    border-right: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.liquid-gradient {
-    background: linear-gradient(90deg, #004ac6, #585be6, #0053db);
-    background-size: 200% 200%;
-    animation: liquid-gradient-anim 3s ease infinite;
-}
-
-.liquid-gradient-warning {
-    background: linear-gradient(90deg, #f59e0b, #fbbf24, #f59e0b);
-    background-size: 200% 200%;
-    animation: liquid-gradient-anim 3s ease infinite;
-}
-
-.liquid-gradient-success {
-    background: linear-gradient(90deg, #10b981, #34d399, #10b981);
-    background-size: 200% 200%;
-    animation: liquid-gradient-anim 3s ease infinite;
-}
-
-@keyframes liquid-gradient-anim {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
-}
-
-/* Decorative Background Orbs */
-.bg-orb-1 {
-    position: fixed;
-    top: -10%;
-    left: -10%;
-    width: 40vw;
-    height: 40vw;
-    border-radius: 50%;
-    background: radial-gradient(circle, rgba(0, 83, 219, 0.08) 0%, rgba(255,255,255,0) 70%);
-    z-index: -1;
-    pointer-events: none;
-}
-
-.bg-orb-2 {
-    position: fixed;
-    bottom: -20%;
-    right: -10%;
-    width: 50vw;
-    height: 50vw;
-    border-radius: 50%;
-    background: radial-gradient(circle, rgba(88, 91, 230, 0.06) 0%, rgba(255,255,255,0) 70%);
-    z-index: -1;
-    pointer-events: none;
+.material-symbols-outlined[data-weight="fill"],
+.fill-icon {
+  font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
 }

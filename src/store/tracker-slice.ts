@@ -1,4 +1,5 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
+import { toast } from "sonner";
 
 import type { DifficultyFilter, PaceMonths, TopicFilter, TrackerPersistedState } from "@/lib/types";
 import { clampPace } from "@/lib/problem-math";
@@ -90,7 +91,7 @@ export const {
 
 export default trackerSlice.reducer;
 
-export const PACE_OPTIONS: PaceMonths[] = [3, 4, 5, 6];
+export const PACE_OPTIONS: PaceMonths[] = [3, 4, 5, 6, 12];
 
 export const toggleAndSyncSolved = (slug: string) => {
   return async (dispatch: any, getState: any) => {
@@ -98,10 +99,32 @@ export const toggleAndSyncSolved = (slug: string) => {
     
     // Background sync
     const state = getState();
-    const { solvedSlugs, solvedAt } = state.tracker;
+    const { solvedSlugs, solvedAt, paceMonths } = state.tracker;
     
     // Import server action dynamically or top level to sync
     const { syncProgressToSupabase } = await import("@/app/actions/sync");
-    await syncProgressToSupabase(solvedSlugs, solvedAt);
+    const result = await syncProgressToSupabase(solvedSlugs, solvedAt, paceMonths);
+    if (!result?.success && result?.error !== "Not authenticated") {
+      toast.error("Failed to sync progress");
+    } else {
+      const isSolved = solvedSlugs[slug];
+      if (isSolved) toast.success("Problem solved! Great job! 🎉");
+      else toast.info("Problem marked as unsolved");
+    }
+  };
+};
+
+export const setPaceAndSync = (months: number) => {
+  return async (dispatch: any, getState: any) => {
+    dispatch(setPaceMonths(months));
+    toast.success(`Pace updated to ${months === 12 ? "1 Year" : months + " Months"}`);
+    
+    // Background sync
+    const state = getState();
+    const { solvedSlugs, solvedAt, paceMonths } = state.tracker;
+    
+    // Import server action dynamically or top level to sync
+    const { syncProgressToSupabase } = await import("@/app/actions/sync");
+    await syncProgressToSupabase(solvedSlugs, solvedAt, paceMonths);
   };
 };

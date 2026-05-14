@@ -17,11 +17,12 @@ export function ThemeToggle() {
     <button
       type="button"
       onClick={() => setTheme(isDark ? "light" : "dark")}
-      className="inline-flex items-center gap-2 rounded-xl border border-border bg-panel px-3 py-2 text-sm font-semibold text-text transition hover:border-accent/50 hover:text-accent"
+      className="p-2 rounded-full hover:bg-surface-container hover:text-secondary transition-colors duration-100 cursor-pointer active:opacity-80 flex items-center justify-center"
       aria-label="Toggle theme"
     >
-      <span className="text-base leading-none">{isDark ? "☀" : "☾"}</span>
-      <span>{isDark ? "Light" : "Dark"}</span>
+      <span className="material-symbols-outlined" data-icon={isDark ? "light_mode" : "dark_mode"}>
+        {isDark ? "light_mode" : "dark_mode"}
+      </span>
     </button>
   );
 }

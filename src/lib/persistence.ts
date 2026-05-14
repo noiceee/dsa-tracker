@@ -8,7 +8,6 @@ export function pickPersistedState(state: TrackerState): TrackerPersistedState {
     solvedSlugs: state.solvedSlugs,
     solvedAt: state.solvedAt,
     paceMonths: state.paceMonths,
-    leetcode: state.leetcode,
   };
 }
 
