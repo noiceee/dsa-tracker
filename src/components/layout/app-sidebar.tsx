@@ -16,7 +16,7 @@ export function AppSidebar({ user }: { user: User | null }) {
   const dispatch = useAppDispatch();
   const router = useRouter();
   const [isLoginOpen, setIsLoginOpen] = useState(false);
-  
+
   const handleLogout = async () => {
     const supabase = createClient();
     await supabase.auth.signOut();
@@ -34,17 +34,17 @@ export function AppSidebar({ user }: { user: User | null }) {
             <p className="font-label-md text-label-md text-on-surface-variant">Precision DSA Analytics</p>
           </div>
         </div>
-        
+
         <div className="flex flex-col gap-1 flex-1">
           <NavRow label="Dashboard" icon="dashboard" href="/dashboard" active={pathname === "/dashboard"} />
           <NavRow label="Problems" icon="list_alt" href="/problems" active={pathname === "/problems"} />
           <NavRow label="Roadmap" icon="map" href="/roadmap" active={pathname === "/roadmap"} />
           <NavRow label="Settings" icon="settings" href="/settings" active={pathname === "/settings"} />
         </div>
-        
+
         <div className="mt-auto flex flex-col gap-1 pt-4 border-t border-outline-variant">
           <a
-            href="https://buymeacoffee.com/"
+            href="https://buymeacoffee.com/noiceee"
             target="_blank"
             rel="noopener noreferrer"
             className="w-full flex items-center justify-center gap-2 py-2 px-4 bg-[#FFDD00] text-black shadow-md rounded-lg font-button-text text-button-text hover:brightness-95 transition-all mb-4"
@@ -52,12 +52,12 @@ export function AppSidebar({ user }: { user: User | null }) {
             <span className="material-symbols-outlined text-sm">local_cafe</span>
             Buy me a coffee
           </a>
-          
+
           <a className="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:bg-surface-container-high rounded-lg font-medium hover:bg-surface-container-highest transition-all duration-150 scale-95 active:scale-100 cursor-pointer">
             <span className="material-symbols-outlined" data-icon="help_outline">help_outline</span>
             <span className="font-label-md text-label-md">Help Center</span>
           </a>
-          
+
           {user ? (
             <button onClick={handleLogout} className="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:bg-surface-container-high rounded-lg font-medium hover:bg-surface-container-highest transition-all duration-150 scale-95 active:scale-100 w-full text-left">
               <span className="material-symbols-outlined" data-icon="logout">logout</span>

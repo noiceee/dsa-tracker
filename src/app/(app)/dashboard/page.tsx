@@ -1,10 +1,12 @@
 "use client";
 
 import { useMemo } from "react";
-import { useAppSelector } from "@/store/hooks";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { problems, type Difficulty } from "@/data/problems";
 import { countByDifficulty, estimateDailyTarget, computeStreak, DIFFICULTY_LABEL } from "@/lib/problem-math";
 import { ProgressCalendar } from "@/components/progress-calendar";
+import { toggleAndSyncSolved } from "@/store/tracker-slice";
+import { motion, AnimatePresence } from "framer-motion";
 
 /**
  * Pick the "next problem" the user should solve.
@@ -17,6 +19,7 @@ function getNextProblem(solvedSlugs: Record<string, boolean>) {
 }
 
 export default function DashboardPage() {
+  const dispatch = useAppDispatch();
   const solvedSlugs = useAppSelector((state) => state.tracker.solvedSlugs);
   const solvedAt = useAppSelector((state) => state.tracker.solvedAt);
   const paceMonths = useAppSelector((state) => state.tracker.paceMonths);
@@ -43,6 +46,10 @@ export default function DashboardPage() {
   const potdDiffLabel = DIFFICULTY_LABEL[potd.difficulty];
   const potdDiffColor = potd.difficulty === "E" ? "text-success bg-success/10 border-success/20" : potd.difficulty === "M" ? "text-warning bg-warning/10 border-warning/20" : "text-error bg-error/10 border-error/20";
   const isPotdSolved = Boolean(solvedSlugs[potd.slug]);
+
+  const handleMarkAsDone = () => {
+    dispatch(toggleAndSyncSolved(potd.slug));
+  };
 
   return (
     <div className="max-w-container-max-width mx-auto p-margin-mobile md:p-margin-desktop space-y-8">
@@ -108,40 +115,68 @@ export default function DashboardPage() {
       </div>
 
       {/* Problem of the Day — Dynamic */}
-      <div className="bg-surface border border-outline-variant rounded-xl p-6 relative overflow-hidden">
+      <div className="bg-surface border border-outline-variant rounded-xl p-6 relative overflow-hidden min-h-[220px]">
         <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-secondary/10 to-transparent rounded-full blur-3xl -translate-y-1/2 translate-x-1/4 pointer-events-none"></div>
-        <div className="flex items-start justify-between mb-6 relative z-10">
-          <div>
-            <div className="flex items-center gap-2 mb-2">
-              <span className="font-label-md text-label-md text-secondary uppercase tracking-wider">Up Next</span>
-              <span className={`px-2 py-0.5 rounded-full font-label-md text-[10px] border ${potdDiffColor}`}>{potdDiffLabel}</span>
-              {isPotdSolved && (
-                <span className="px-2 py-0.5 rounded-full font-label-md text-[10px] border border-success/20 bg-success/10 text-success flex items-center gap-1">
-                  <span className="material-symbols-outlined" style={{ fontSize: "12px" }}>check</span>Solved
-                </span>
-              )}
-            </div>
-            <h3 className="font-display-lg text-headline-lg-mobile md:text-[28px] md:leading-[36px] font-bold text-on-background mb-2">{potd.title}</h3>
-            <p className="font-body-md text-body-md text-on-surface-variant">
-              Topic: {potd.topic} · Practice this problem to stay on track with your daily goals.
-            </p>
-          </div>
-        </div>
-        <div className="flex items-center gap-4 mt-6 relative z-10">
-          <a
-            href={potd.url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="px-6 py-2.5 bg-primary text-on-primary rounded-lg font-button-text text-button-text hover:bg-surface-tint transition-colors duration-100 flex items-center gap-2"
+        
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={potd.slug}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, x: -20 }}
+            transition={{ duration: 0.3, ease: "easeOut" }}
+            className="relative z-10"
           >
-            <span className="material-symbols-outlined" style={{ fontSize: "18px" }}>code</span>
-            Solve Now
-          </a>
-        </div>
-        <div className="mt-6 pt-4 border-t border-outline-variant/50 flex gap-4 text-sm text-on-surface-variant font-label-md">
-          <span className="flex items-center gap-1"><span className="material-symbols-outlined" style={{ fontSize: "16px" }}>sell</span>{potd.topic}</span>
-          <span className="flex items-center gap-1"><span className="material-symbols-outlined" style={{ fontSize: "16px" }}>speed</span>{potdDiffLabel} Difficulty</span>
-        </div>
+            <div className="flex items-start justify-between mb-6">
+              <div>
+                <div className="flex items-center gap-2 mb-2">
+                  <span className="font-label-md text-label-md text-secondary uppercase tracking-wider">Up Next</span>
+                  <span className={`px-2 py-0.5 rounded-full font-label-md text-[10px] border ${potdDiffColor}`}>{potdDiffLabel}</span>
+                  {isPotdSolved && (
+                    <span className="px-2 py-0.5 rounded-full font-label-md text-[10px] border border-success/20 bg-success/10 text-success flex items-center gap-1">
+                      <span className="material-symbols-outlined" style={{ fontSize: "12px" }}>check</span>Solved
+                    </span>
+                  )}
+                </div>
+                <h3 className="font-display-lg text-headline-lg-mobile md:text-[28px] md:leading-[36px] font-bold text-on-background mb-2">{potd.title}</h3>
+                <p className="font-body-md text-body-md text-on-surface-variant">
+                  Topic: {potd.topic} · Practice this problem to stay on track with your daily goals.
+                </p>
+              </div>
+            </div>
+            
+            <div className="flex flex-wrap items-center gap-3 mt-6">
+              <a
+                href={potd.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="px-6 py-2.5 bg-primary text-on-primary rounded-lg font-button-text text-button-text hover:bg-surface-tint transition-all duration-100 flex items-center gap-2 shadow-md hover:shadow-lg active:scale-95"
+              >
+                <span className="material-symbols-outlined" style={{ fontSize: "18px" }}>code</span>
+                Solve Now
+              </a>
+
+              <button
+                onClick={handleMarkAsDone}
+                className={`px-6 py-2.5 rounded-lg font-button-text text-button-text transition-all duration-200 flex items-center gap-2 border shadow-sm active:scale-95 ${
+                  isPotdSolved 
+                    ? "bg-success/10 border-success/30 text-success" 
+                    : "bg-surface border-outline-variant text-on-surface hover:bg-surface-container-high"
+                }`}
+              >
+                <span className="material-symbols-outlined" style={{ fontSize: "18px" }}>
+                  {isPotdSolved ? "check_circle" : "radio_button_unchecked"}
+                </span>
+                {isPotdSolved ? "Solved" : "Mark as Done"}
+              </button>
+            </div>
+
+            <div className="mt-6 pt-4 border-t border-outline-variant/50 flex gap-4 text-sm text-on-surface-variant font-label-md">
+              <span className="flex items-center gap-1"><span className="material-symbols-outlined" style={{ fontSize: "16px" }}>sell</span>{potd.topic}</span>
+              <span className="flex items-center gap-1"><span className="material-symbols-outlined" style={{ fontSize: "16px" }}>speed</span>{potdDiffLabel} Difficulty</span>
+            </div>
+          </motion.div>
+        </AnimatePresence>
       </div>
       
       {/* Activity Graph */}

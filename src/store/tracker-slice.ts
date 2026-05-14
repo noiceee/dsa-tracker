@@ -3,6 +3,7 @@ import { toast } from "sonner";
 
 import type { DifficultyFilter, PaceMonths, TopicFilter, TrackerPersistedState } from "@/lib/types";
 import { clampPace } from "@/lib/problem-math";
+import { syncProgressToSupabase } from "@/app/actions/sync";
 
 export type TrackerState = TrackerPersistedState & {
   search: string;
@@ -101,8 +102,6 @@ export const toggleAndSyncSolved = (slug: string) => {
     const state = getState();
     const { solvedSlugs, solvedAt, paceMonths } = state.tracker;
     
-    // Import server action dynamically or top level to sync
-    const { syncProgressToSupabase } = await import("@/app/actions/sync");
     const result = await syncProgressToSupabase(solvedSlugs, solvedAt, paceMonths);
     if (!result?.success && result?.error !== "Not authenticated") {
       toast.error("Failed to sync progress");
@@ -123,8 +122,6 @@ export const setPaceAndSync = (months: number) => {
     const state = getState();
     const { solvedSlugs, solvedAt, paceMonths } = state.tracker;
     
-    // Import server action dynamically or top level to sync
-    const { syncProgressToSupabase } = await import("@/app/actions/sync");
     await syncProgressToSupabase(solvedSlugs, solvedAt, paceMonths);
   };
 };
