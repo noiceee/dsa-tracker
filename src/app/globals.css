@@ -1,0 +1,153 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* Stitch Light Mode */
+  --color-canvas: 247 249 251; /* #f7f9fb */
+  --color-panel: 255 255 255;
+  --color-panel-alt: 236 238 240; /* surface_container */
+  --color-text: 25 28 30; /* on_surface #191c1e */
+  --color-text-muted: 115 118 134; /* outline #737686 */
+  --color-accent: 37 99 235; /* primary #2563eb */
+  --color-accent-soft: 219 225 255; /* primary_fixed */
+  --color-success: 5 150 105;
+  --color-warning: 202 138 4;
+  --color-danger: 186 26 26; /* error #ba1a1a */
+  --color-border: 195 198 215; /* outline_variant #c3c6d7 */
+}
+
+.dark {
+  /* Stitch Dark Mode Inference */
+  --color-canvas: 25 28 30; /* #191c1e */
+  --color-panel: 45 49 51; /* inverse_surface */
+  --color-panel-alt: 35 38 40;
+  --color-text: 247 249 251; /* #f7f9fb */
+  --color-text-muted: 195 198 215; /* outline_variant */
+  --color-accent: 180 197 255; /* inverse_primary #b4c5ff */
+  --color-accent-soft: 37 99 235; 
+  --color-success: 45 212 191;
+  --color-warning: 250 204 21;
+  --color-danger: 255 218 214; /* error_container */
+  --color-border: 115 118 134; /* outline */
+}
+
+* {
+  border-color: rgb(var(--color-border) / 0.8);
+  scrollbar-width: thin;
+  scrollbar-color: rgb(var(--color-border) / 0.5) transparent;
+}
+
+/* Webkit Scrollbar Styling */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgb(var(--color-border) / 0.5);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgb(var(--color-border) / 0.8);
+}
+
+html,
+body {
+  min-height: 100%;
+}
+
+body {
+  background-color: rgb(var(--color-canvas));
+  color: rgb(var(--color-text));
+  font-feature-settings: "ss01" on, "ss03" on;
+  text-rendering: geometricPrecision;
+}
+
+/* Material Icons */
+.material-symbols-outlined {
+    font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+.material-symbols-outlined[data-weight="fill"] {
+    font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+
+/* Glassmorphism Utilities */
+.glass-panel {
+    background: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.8);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.04);
+}
+
+.dark .glass-panel {
+    background: rgba(30, 30, 30, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.glass-sidebar {
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.8) 0%, rgba(247, 249, 251, 0.85) 100%);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-right: 1px solid rgba(255, 255, 255, 0.6);
+}
+
+.dark .glass-sidebar {
+    background: linear-gradient(180deg, rgba(30, 30, 30, 0.8) 0%, rgba(20, 20, 20, 0.85) 100%);
+    border-right: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.liquid-gradient {
+    background: linear-gradient(90deg, #004ac6, #585be6, #0053db);
+    background-size: 200% 200%;
+    animation: liquid-gradient-anim 3s ease infinite;
+}
+
+.liquid-gradient-warning {
+    background: linear-gradient(90deg, #f59e0b, #fbbf24, #f59e0b);
+    background-size: 200% 200%;
+    animation: liquid-gradient-anim 3s ease infinite;
+}
+
+.liquid-gradient-success {
+    background: linear-gradient(90deg, #10b981, #34d399, #10b981);
+    background-size: 200% 200%;
+    animation: liquid-gradient-anim 3s ease infinite;
+}
+
+@keyframes liquid-gradient-anim {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* Decorative Background Orbs */
+.bg-orb-1 {
+    position: fixed;
+    top: -10%;
+    left: -10%;
+    width: 40vw;
+    height: 40vw;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(0, 83, 219, 0.08) 0%, rgba(255,255,255,0) 70%);
+    z-index: -1;
+    pointer-events: none;
+}
+
+.bg-orb-2 {
+    position: fixed;
+    bottom: -20%;
+    right: -10%;
+    width: 50vw;
+    height: 50vw;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(88, 91, 230, 0.06) 0%, rgba(255,255,255,0) 70%);
+    z-index: -1;
+    pointer-events: none;
+}

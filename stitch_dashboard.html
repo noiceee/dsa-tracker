@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>DSA Tracker - Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        "colors": {
+                "on-error-container": "#93000a",
+                "error-container": "#ffdad6",
+                "inverse-surface": "#2d3133",
+                "secondary-fixed": "#dbe4ea",
+                "on-background": "#191c1e",
+                "background": "#f7f9fb",
+                "on-surface-variant": "#434655",
+                "on-tertiary-fixed-variant": "#2f2ebe",
+                "surface-container-lowest": "#ffffff",
+                "surface-tint": "#0053db",
+                "secondary-container": "#dbe4ea",
+                "primary-container": "#2563eb",
+                "surface-container": "#eceef0",
+                "on-secondary-container": "#5d666b",
+                "tertiary": "#3e3fcc",
+                "surface-container-highest": "#e0e3e5",
+                "surface-variant": "#e0e3e5",
+                "surface-dim": "#d8dadc",
+                "on-error": "#ffffff",
+                "inverse-primary": "#b4c5ff",
+                "on-tertiary-container": "#f1eeff",
+                "primary": "#004ac6",
+                "outline-variant": "#c3c6d7",
+                "on-tertiary-fixed": "#07006c",
+                "secondary": "#576065",
+                "on-primary-fixed-variant": "#003ea8",
+                "surface-bright": "#f7f9fb",
+                "on-surface": "#191c1e",
+                "primary-fixed": "#dbe1ff",
+                "on-primary-container": "#eeefff",
+                "primary-fixed-dim": "#b4c5ff",
+                "on-secondary-fixed": "#141d21",
+                "on-secondary": "#ffffff",
+                "surface-container-high": "#e6e8ea",
+                "tertiary-container": "#585be6",
+                "surface": "#f7f9fb",
+                "on-primary-fixed": "#00174b",
+                "tertiary-fixed": "#e1e0ff",
+                "tertiary-fixed-dim": "#c0c1ff",
+                "error": "#ba1a1a",
+                "secondary-fixed-dim": "#bfc8ce",
+                "on-tertiary": "#ffffff",
+                "on-primary": "#ffffff",
+                "surface-container-low": "#f2f4f6",
+                "inverse-on-surface": "#eff1f3",
+                "on-secondary-fixed-variant": "#3f484d",
+                "outline": "#737686"
+        },
+        "borderRadius": {
+                "DEFAULT": "0.25rem",
+                "lg": "0.5rem",
+                "xl": "0.75rem",
+                "full": "9999px",
+                "2xl": "1rem",
+                "3xl": "1.5rem"
+        },
+        "spacing": {
+                "lg": "24px",
+                "md": "16px",
+                "xl": "40px",
+                "sm": "8px",
+                "gutter": "24px",
+                "margin-desktop": "48px",
+                "unit": "4px",
+                "xxl": "64px",
+                "xs": "4px",
+                "margin-mobile": "16px"
+        },
+        "fontFamily": {
+                "headline-xl-mobile": [
+                        "Hanken Grotesk"
+                ],
+                "headline-xl": [
+                        "Hanken Grotesk"
+                ],
+                "headline-lg-mobile": [
+                        "Hanken Grotesk"
+                ],
+                "body-md": [
+                        "Hanken Grotesk"
+                ],
+                "label-sm": [
+                        "Hanken Grotesk"
+                ],
+                "headline-lg": [
+                        "Hanken Grotesk"
+                ],
+                "label-md": [
+                        "Hanken Grotesk"
+                ],
+                "body-lg": [
+                        "Hanken Grotesk"
+                ]
+        },
+        "fontSize": {
+                "headline-xl-mobile": [
+                        "32px",
+                        {
+                                "lineHeight": "1.2",
+                                "fontWeight": "700"
+                        }
+                ],
+                "headline-xl": [
+                        "48px",
+                        {
+                                "lineHeight": "1.2",
+                                "letterSpacing": "-0.02em",
+                                "fontWeight": "700"
+                        }
+                ],
+                "headline-lg-mobile": [
+                        "24px",
+                        {
+                                "lineHeight": "1.3",
+                                "fontWeight": "600"
+                        }
+                ],
+                "body-md": [
+                        "16px",
+                        {
+                                "lineHeight": "1.6",
+                                "fontWeight": "400"
+                        }
+                ],
+                "label-sm": [
+                        "12px",
+                        {
+                                "lineHeight": "1",
+                                "fontWeight": "500"
+                        }
+                ],
+                "headline-lg": [
+                        "32px",
+                        {
+                                "lineHeight": "1.3",
+                                "fontWeight": "600"
+                        }
+                ],
+                "label-md": [
+                        "14px",
+                        {
+                                "lineHeight": "1",
+                                "letterSpacing": "0.05em",
+                                "fontWeight": "600"
+                        }
+                ],
+                "body-lg": [
+                        "18px",
+                        {
+                                "lineHeight": "1.6",
+                                "fontWeight": "400"
+                        }
+                ]
+        }
+},
+    },
+  }
+</script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .material-symbols-outlined[data-weight="fill"] {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        
+        /* Glassmorphism Utilities */
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.04);
+        }
+        
+        .glass-sidebar {
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.8) 0%, rgba(247, 249, 251, 0.85) 100%);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-right: 1px solid rgba(255, 255, 255, 0.6);
+        }
+        
+        .liquid-gradient {
+            background: linear-gradient(90deg, #004ac6, #585be6, #0053db);
+            background-size: 200% 200%;
+            animation: liquid-gradient-anim 3s ease infinite;
+        }
+        
+        .liquid-gradient-warning {
+            background: linear-gradient(90deg, #f59e0b, #fbbf24, #f59e0b);
+            background-size: 200% 200%;
+            animation: liquid-gradient-anim 3s ease infinite;
+        }
+        
+        .liquid-gradient-success {
+            background: linear-gradient(90deg, #10b981, #34d399, #10b981);
+            background-size: 200% 200%;
+            animation: liquid-gradient-anim 3s ease infinite;
+        }
+        
+        @keyframes liquid-gradient-anim {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        /* Decorative Background Orbs */
+        .bg-orb-1 {
+            position: fixed;
+            top: -10%;
+            left: -10%;
+            width: 40vw;
+            height: 40vw;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(0, 83, 219, 0.08) 0%, rgba(255,255,255,0) 70%);
+            z-index: -1;
+            pointer-events: none;
+        }
+        .bg-orb-2 {
+            position: fixed;
+            bottom: -20%;
+            right: -10%;
+            width: 50vw;
+            height: 50vw;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(88, 91, 230, 0.06) 0%, rgba(255,255,255,0) 70%);
+            z-index: -1;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body class="bg-[#f0f4f8] text-on-background font-body-md antialiased flex flex-col md:flex-row min-h-screen relative overflow-x-hidden">
+<div class="bg-orb-1"></div>
+<div class="bg-orb-2"></div>
+<!-- SideNavBar -->
+<nav class="hidden md:flex flex-col h-full p-4 gap-xs glass-sidebar h-screen w-64 fixed left-0 top-0 z-40">
+<div class="flex items-center gap-3 mb-8 px-2 pt-2">
+<img alt="System Logo" class="w-10 h-10 rounded-xl object-cover shadow-sm" data-alt="A minimalist, high-end abstract logo design featuring intersecting geometric shapes in dark slate and vibrant blue. The design is sleek, modern, and perfectly suited for a professional software development platform. The background is a clean, crisp white, enhancing the sharp lines and corporate aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDDOqou8tKCOTelIoz8Q-YsRvMixHXO7aqWGrZTpv55U27Q43NwfsxGXOfmSHk7nyZVU8IReer8zBK5EqOlRpU7TA2Q_OJVETa-JVYgYGYOzH3BsdGTY21Cs1TrssEqApPzO6QG0-RlHOyEWcVXZjbqB64_9o_w2dMyJ6cU_S48USbXAjgasoxKnHwQtDVGe3I1nnt-nw5Gko3HO5pq2KiwDKKqSmURFLsZduPauvvsHDjZuom2abhf2M6IZF17COnwK9IFoRZtsds_"/>
+<div>
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile text-primary tracking-tight">DSA Tracker</h1>
+<p class="font-label-sm text-label-sm text-on-surface-variant mt-0.5">Precision DSA Analytics</p>
+</div>
+</div>
+<div class="flex flex-col gap-1 flex-1">
+<a class="flex items-center gap-3 px-4 py-3 bg-white/80 text-primary rounded-xl shadow-[0_2px_10px_rgba(0,0,0,0.03)] border border-white/50 font-semibold scale-[0.98] transition-all" href="#">
+<span class="material-symbols-outlined text-primary" data-icon="dashboard">dashboard</span>
+<span class="font-label-md text-[14px]">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-white/50 rounded-xl font-medium hover:text-primary transition-all duration-200 scale-[0.98] hover:scale-[1]" href="#">
+<span class="material-symbols-outlined" data-icon="list_alt">list_alt</span>
+<span class="font-label-md text-[14px]">Problems</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-white/50 rounded-xl font-medium hover:text-primary transition-all duration-200 scale-[0.98] hover:scale-[1]" href="#">
+<span class="material-symbols-outlined" data-icon="map">map</span>
+<span class="font-label-md text-[14px]">Roadmap</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-white/50 rounded-xl font-medium hover:text-primary transition-all duration-200 scale-[0.98] hover:scale-[1]" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="font-label-md text-[14px]">Settings</span>
+</a>
+</div>
+<div class="mt-auto flex flex-col gap-1 pt-4 border-t border-outline-variant/30 relative">
+<div class="absolute top-0 left-4 right-4 h-px bg-gradient-to-r from-transparent via-outline-variant/50 to-transparent"></div>
+<button class="w-full py-3 px-4 liquid-gradient text-white rounded-xl font-label-md text-[14px] shadow-lg shadow-primary/20 hover:shadow-primary/30 transition-all duration-200 mb-4 hover:scale-[1.02] active:scale-[0.98]">
+                Buy me a coffee
+            </button>
+<a class="flex items-center gap-3 px-4 py-2.5 text-on-surface-variant hover:bg-white/50 rounded-xl font-medium transition-all duration-200" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="help_outline">help_outline</span>
+<span class="font-label-sm text-[13px]">Help Center</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-2.5 text-on-surface-variant hover:bg-white/50 rounded-xl font-medium transition-all duration-200" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="logout">logout</span>
+<span class="font-label-sm text-[13px]">Sign Out</span>
+</a>
+</div>
+</nav>
+<!-- Main Content Area -->
+<div class="flex-1 flex flex-col min-w-0 md:ml-64 relative z-10">
+<!-- TopAppBar -->
+<header class="sticky top-0 z-50 flex items-center justify-between px-margin-mobile md:px-margin-desktop h-20 w-full glass-panel border-x-0 border-t-0 rounded-none">
+<div class="flex items-center md:hidden gap-3">
+<img alt="System Logo" class="w-8 h-8 rounded-lg object-cover shadow-sm" data-alt="A minimalist, high-end abstract logo design featuring intersecting geometric shapes in dark slate and vibrant blue. The design is sleek, modern, and perfectly suited for a professional software development platform. The background is a clean, crisp white, enhancing the sharp lines and corporate aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDNGXiBa5uUYUuS6774wCQDlqUtYHSFKmrQ7y5ySpnraAbH053OgLqw0wX5Upecz9ac7lOkdVlwwupi_eGqX7UwgehYW5q-TX-vTIli8e46oTFdZ6ALh-mJEGhn_v1ZMi9Vj2j9Tq4G7q7_SshmrcgSF5i4MHQkHhXcNI6Y2eBfeJ7B5tW3Tmg_0IprVfquuebMQ-IVVyWRas1UTBa9trMx5j6QKG6uPHdavUyT5yFFFEcttxJLZ5SMvcQgWtE29jbGzyRm__FWVN9x"/>
+<span class="font-headline-lg-mobile text-[20px] font-bold text-primary">DSA Tracker</span>
+</div>
+<div class="hidden md:flex flex-1 max-w-md ml-auto mr-8">
+<div class="relative w-full group">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline group-focus-within:text-primary transition-colors">search</span>
+<input class="w-full pl-12 pr-4 py-2.5 bg-white/60 backdrop-blur-sm border border-white rounded-full focus:border-primary/50 focus:ring-2 focus:ring-primary/20 outline-none font-body-md text-[14px] transition-all shadow-[inset_0_2px_4px_rgba(0,0,0,0.02)] placeholder-on-surface-variant/60" placeholder="Search problems..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-3 ml-auto md:ml-0 text-on-surface-variant">
+<button class="p-2.5 rounded-full hover:bg-white/80 hover:text-primary transition-all duration-200 cursor-pointer flex items-center justify-center shadow-sm border border-transparent hover:border-white">
+<span class="material-symbols-outlined" data-icon="local_fire_department">local_fire_department</span>
+</button>
+<button class="p-2.5 rounded-full hover:bg-white/80 hover:text-primary transition-all duration-200 cursor-pointer flex items-center justify-center shadow-sm border border-transparent hover:border-white">
+<span class="material-symbols-outlined" data-icon="pie_chart">pie_chart</span>
+</button>
+<button class="p-2.5 rounded-full hover:bg-white/80 hover:text-primary transition-all duration-200 cursor-pointer flex items-center justify-center shadow-sm border border-transparent hover:border-white">
+<span class="material-symbols-outlined" data-icon="dark_mode">dark_mode</span>
+</button>
+<div class="w-10 h-10 rounded-full overflow-hidden border-2 border-white shadow-md cursor-pointer ml-3 hover:scale-105 transition-transform">
+<img alt="User Profile Avatar" class="w-full h-full object-cover" data-alt="A professional headshot of a young woman with a neutral, focused expression. She is wearing a modern, dark blazer against a minimalist light grey background. The lighting is soft and even, highlighting a polished, corporate tech aesthetic suitable for a user profile avatar." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBEAKZga4JsCYfd_UzjMBrOxYBjJ2lOCdkVy4UthfXNYc5xvvju18jZ-BPLwKPALvkGbPabUvVfL6IJPpjdSfT8oDp_8s3eKQeLA0mPDUmWRCVfS8RwLXAs8TQajHgeVlcSShoZwkMYcQTIghoBwUlzPMBEzRDi1qfd2es_dLKGBIUnlhsPcixulI0p3DLfejYotZgiq6eFfN-p5YvjgsNLWxGe-NnPp9EgJ2ruhviE8-GW101JS62yPS0RveANWdg2AbQObjTFQFUy"/>
+</div>
+</div>
+</header>
+<!-- Dashboard Content -->
+<main class="flex-1 p-margin-mobile md:p-margin-desktop overflow-y-auto pt-8">
+<div class="max-w-[1280px] mx-auto space-y-8">
+<!-- Page Header -->
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-2">
+<div>
+<h2 class="font-headline-xl text-headline-xl-mobile md:text-headline-xl text-on-background tracking-tight">Overview</h2>
+<p class="font-body-md text-body-md text-on-surface-variant mt-2">Track your daily algorithm mastery.</p>
+</div>
+<div class="font-label-sm text-[13px] text-primary glass-panel px-4 py-2 rounded-full inline-flex items-center gap-2 font-medium">
+<span class="material-symbols-outlined" style="font-size: 16px;">calendar_today</span>
+                        October 24, 2023
+                    </div>
+</div>
+<!-- Top Stats Grid -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<!-- Stat Card 1 -->
+<div class="glass-panel rounded-3xl p-6 hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
+<div class="flex items-center justify-between mb-4">
+<span class="font-label-md text-[12px] text-on-surface-variant uppercase tracking-widest font-semibold">Current Streak</span>
+<div class="p-2 bg-orange-100/50 rounded-full">
+<span class="material-symbols-outlined text-orange-500" data-weight="fill">local_fire_department</span>
+</div>
+</div>
+<div class="flex items-baseline gap-2 mb-6">
+<span class="font-headline-xl text-[48px] text-on-background leading-none tracking-tight">14</span>
+<span class="font-body-md text-[14px] text-on-surface-variant">days</span>
+</div>
+<div class="w-full bg-white/50 rounded-full h-2 shadow-inner overflow-hidden border border-white/40">
+<div class="liquid-gradient-warning h-full rounded-full" style="width: 70%"></div>
+</div>
+</div>
+<!-- Stat Card 2 -->
+<div class="glass-panel rounded-3xl p-6 hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
+<div class="flex items-center justify-between mb-4">
+<span class="font-label-md text-[12px] text-on-surface-variant uppercase tracking-widest font-semibold">Total Solved</span>
+<div class="p-2 bg-blue-100/50 rounded-full">
+<span class="material-symbols-outlined text-primary" data-weight="fill">task_alt</span>
+</div>
+</div>
+<div class="flex items-baseline gap-2 mb-5">
+<span class="font-headline-xl text-[48px] text-on-background leading-none tracking-tight">248</span>
+<span class="font-body-md text-[14px] text-on-surface-variant">problems</span>
+</div>
+<div class="flex gap-2">
+<span class="font-label-sm text-[11px] bg-emerald-100/60 text-emerald-700 px-3 py-1 rounded-full border border-emerald-200/50 backdrop-blur-sm">Easy: 120</span>
+<span class="font-label-sm text-[11px] bg-amber-100/60 text-amber-700 px-3 py-1 rounded-full border border-amber-200/50 backdrop-blur-sm">Med: 95</span>
+<span class="font-label-sm text-[11px] bg-rose-100/60 text-rose-700 px-3 py-1 rounded-full border border-rose-200/50 backdrop-blur-sm">Hard: 33</span>
+</div>
+</div>
+<!-- Stat Card 3 -->
+<div class="glass-panel rounded-3xl p-6 hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
+<div class="flex items-center justify-between mb-4">
+<span class="font-label-md text-[12px] text-on-surface-variant uppercase tracking-widest font-semibold">Daily Goal</span>
+<div class="p-2 bg-emerald-100/50 rounded-full">
+<span class="material-symbols-outlined text-emerald-500">flag</span>
+</div>
+</div>
+<div class="flex items-baseline gap-2 mb-6">
+<span class="font-headline-xl text-[48px] text-on-background leading-none tracking-tight">2<span class="text-3xl text-outline-variant font-medium">/3</span></span>
+</div>
+<div class="w-full bg-white/50 rounded-full h-2 shadow-inner overflow-hidden border border-white/40">
+<div class="liquid-gradient-success h-full rounded-full" style="width: 66%"></div>
+</div>
+</div>
+</div>
+<!-- Main Bento Grid -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+<!-- Problem of the Day (Spans 2 cols on LG) -->
+<div class="lg:col-span-2 glass-panel rounded-3xl p-8 relative overflow-hidden group">
+<div class="absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-primary/10 via-tertiary/5 to-transparent rounded-full blur-3xl -translate-y-1/2 translate-x-1/4 pointer-events-none"></div>
+<div class="flex items-start justify-between mb-6 relative z-10">
+<div>
+<div class="flex items-center gap-3 mb-4">
+<span class="font-label-md text-[12px] text-primary uppercase tracking-widest font-bold">Problem of the Day</span>
+<span class="px-3 py-1 rounded-full bg-rose-100/80 text-rose-700 font-label-sm text-[11px] border border-rose-200/50 backdrop-blur-sm shadow-sm">Hard</span>
+</div>
+<h3 class="font-headline-lg text-[32px] leading-tight text-on-background mb-3">Median of Two Sorted Arrays</h3>
+<p class="font-body-lg text-[16px] text-on-surface-variant max-w-2xl leading-relaxed">Given two sorted arrays nums1 and nums2 of size m and n respectively, return the median of the two sorted arrays. The overall run time complexity should be O(log (m+n)).</p>
+</div>
+</div>
+<div class="flex items-center gap-4 mt-8 relative z-10">
+<button class="px-6 py-3 liquid-gradient text-white rounded-xl font-label-md text-[14px] shadow-lg shadow-primary/20 hover:shadow-primary/30 transition-all duration-200 flex items-center gap-2 hover:scale-[1.02] active:scale-[0.98]">
+<span class="material-symbols-outlined" style="font-size: 20px;">code</span>
+                                Solve Now
+                            </button>
+<button class="px-5 py-3 bg-white/60 text-on-surface-variant border border-white rounded-xl font-label-md text-[14px] hover:bg-white/80 hover:text-primary transition-all duration-200 flex items-center gap-2 backdrop-blur-sm shadow-sm hover:shadow-md">
+<span class="material-symbols-outlined" style="font-size: 20px;">lightbulb</span>
+                                View Hints
+                            </button>
+</div>
+<div class="mt-8 pt-5 border-t border-white/60 flex flex-wrap gap-6 text-[13px] text-on-surface-variant font-label-sm">
+<span class="flex items-center gap-1.5"><span class="material-symbols-outlined text-outline" style="font-size: 18px;">sell</span> Array, Binary Search, Divide and Conquer</span>
+<span class="flex items-center gap-1.5"><span class="material-symbols-outlined text-emerald-500" style="font-size: 18px;">thumb_up</span> <span class="font-medium text-on-surface">92%</span> Success Rate</span>
+</div>
+</div>
+<!-- Upcoming Contests -->
+<div class="glass-panel rounded-3xl p-6 flex flex-col relative overflow-hidden">
+<div class="absolute -right-10 -bottom-10 w-40 h-40 bg-gradient-to-tl from-primary/10 to-transparent rounded-full blur-2xl pointer-events-none"></div>
+<div class="flex items-center justify-between mb-6 relative z-10">
+<h3 class="font-headline-lg-mobile text-[20px] text-on-background">Upcoming Contests</h3>
+<button class="w-8 h-8 rounded-full flex items-center justify-center hover:bg-white/50 text-outline hover:text-primary transition-colors"><span class="material-symbols-outlined">more_horiz</span></button>
+</div>
+<div class="flex flex-col gap-3 flex-1 relative z-10">
+<div class="p-4 bg-white/40 border border-white/60 rounded-2xl hover:bg-white/60 hover:shadow-md hover:-translate-y-0.5 transition-all cursor-pointer backdrop-blur-sm group">
+<div class="flex justify-between items-start mb-2">
+<span class="font-label-md text-[15px] text-on-background group-hover:text-primary transition-colors">Weekly Contest 369</span>
+<span class="font-label-sm text-[11px] bg-primary/10 text-primary px-2.5 py-1 rounded-full font-medium">In 2 days</span>
+</div>
+<p class="font-body-md text-[13px] text-on-surface-variant flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[14px] opacity-70">event</span> Sunday, 8:00 AM PT
+                                </p>
+</div>
+<div class="p-4 bg-white/20 border border-white/40 rounded-2xl hover:bg-white/50 hover:shadow-md hover:-translate-y-0.5 transition-all cursor-pointer backdrop-blur-sm group">
+<div class="flex justify-between items-start mb-2">
+<span class="font-label-md text-[15px] text-on-background group-hover:text-primary transition-colors">Biweekly Contest 116</span>
+<span class="font-label-sm text-[11px] bg-surface-variant/50 text-on-surface-variant px-2.5 py-1 rounded-full backdrop-blur-sm">In 5 days</span>
+</div>
+<p class="font-body-md text-[13px] text-on-surface-variant flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[14px] opacity-70">event</span> Saturday, 7:30 AM PT
+                                </p>
+</div>
+</div>
+<button class="w-full mt-6 py-3 text-primary font-label-md text-[14px] bg-white/30 border border-white/50 hover:bg-white/60 rounded-xl transition-all backdrop-blur-sm shadow-sm relative z-10">
+                            View All Calendar
+                        </button>
+</div>
+</div>
+<!-- Activity Graph -->
+<div class="glass-panel rounded-3xl p-8 mb-8">
+<div class="flex items-center justify-between mb-8">
+<h3 class="font-headline-lg-mobile text-[24px] text-on-background">Activity History</h3>
+<div class="flex items-center gap-2.5 font-label-sm text-[13px] text-on-surface-variant bg-white/40 px-3 py-1.5 rounded-full border border-white/50 backdrop-blur-sm">
+<span>Less</span>
+<div class="w-3.5 h-3.5 rounded-[4px] bg-black/5 border border-black/5"></div>
+<div class="w-3.5 h-3.5 rounded-[4px] bg-primary/30"></div>
+<div class="w-3.5 h-3.5 rounded-[4px] bg-primary/60"></div>
+<div class="w-3.5 h-3.5 rounded-[4px] bg-primary/90"></div>
+<div class="w-3.5 h-3.5 rounded-[4px] bg-primary shadow-[0_0_8px_rgba(0,74,198,0.4)]"></div>
+<span>More</span>
+</div>
+</div>
+<div class="overflow-x-auto pb-4 scrollbar-hide">
+<div class="min-w-[800px] flex gap-2">
+<!-- Months Header -->
+<div class="flex flex-col gap-2 w-full">
+<div class="flex justify-between font-label-sm text-[12px] text-on-surface-variant mb-2 px-10 uppercase tracking-widest font-medium">
+<span>Jul</span><span>Aug</span><span>Sep</span><span>Oct</span>
+</div>
+<div class="flex gap-3">
+<!-- Days Column -->
+<div class="flex flex-col gap-[6px] justify-between font-label-sm text-[11px] text-on-surface-variant py-1 pr-3 uppercase tracking-wider font-medium">
+<span>Mon</span>
+<span>Wed</span>
+<span>Fri</span>
+</div>
+<!-- Grid container -->
+<div class="flex gap-1.5 flex-1">
+<!-- Weeks (Columns) -->
+<div class="flex flex-col gap-1.5">
+<div class="w-4 h-4 rounded-[4px] bg-black/5 border border-black/5 hover:scale-110 transition-transform cursor-pointer"></div>
+<div class="w-4 h-4 rounded-[4px] bg-black/5 border border-black/5 hover:scale-110 transition-transform cursor-pointer"></div>
+<div class="w-4 h-4 rounded-[4px] bg-primary/30 hover:scale-110 transition-transform cursor-pointer"></div>
+<div class="w-4 h-4 rounded-[4px] bg-black/5 border border-black/5 hover:scale-110 transition-transform cursor-pointer"></div>
+<div class="w-4 h-4 rounded-[4px] bg-primary/60 hover:scale-110 transition-transform cursor-pointer"></div>
+<div class="w-4 h-4 rounded-[4px] bg-black/5 border border-black/5 hover:scale-110 transition-transform cursor-pointer"></div>
+<div class="w-4 h-4 rounded-[4px] bg-primary/30 hover:scale-110 transition-transform cursor-pointer"></div>
+</div>
+<div class="flex flex-col gap-1.5">
+<div class="w-4 h-4 rounded-[4px] bg-primary/30 hover:scale-110 transition-transform cursor-pointer"></div>
+<div class="w-4 h-4 rounded-[4px] bg-primary/90 hover:scale-110 transition-transform cursor-pointer"></div>
+<div class="w-4 h-4 rounded-[4px] bg-black/5 border border-black/5 hover:scale-110 transition-transform cursor-pointer"></div>
+<div class="w-4 h-4 rounded-[4px] bg-primary shadow-[0_0_8px_rgba(0,74,198,0.4)] hover:scale-110 transition-transform cursor-pointer"></div>
+<div class="w-4 h-4 rounded-[4px] bg-primary/30 hover:scale-110 transition-transform cursor-pointer"></div>
+<div class="w-4 h-4 rounded-[4px] bg-black/5 border border-black/5 hover:scale-110 transition-transform cursor-pointer"></div>
+<div class="w-4 h-4 rounded-[4px] bg-black/5 border border-black/5 hover:scale-110 transition-transform cursor-pointer"></div>
+</div>
+<div class="flex flex-col gap-1.5">
+<div class="w-4 h-4 rounded-[4px] bg-black/5 border border-black/5 hover:scale-110 transition-transform cursor-pointer"></div>
+<div class="w-4 h-4 rounded-[4px] bg-black/5 border border-black/5 hover:scale-110 transition-transform cursor-pointer"></div>
+<div class="w-4 h-4 rounded-[4px] bg-primary/60 hover:scale-110 transition-transform cursor-pointer"></div>
+<div class="w-4 h-4 rounded-[4px] bg-primary/30 hover:scale-110 transition-transform cursor-pointer"></div>
+<div class="w-4 h-4 rounded-[4px] bg-black/5 border border-black/5 hover:scale-110 transition-transform cursor-pointer"></div>
+<div class="w-4 h-4 rounded-[4px] bg-primary/90 hover:scale-110 transition-transform cursor-pointer"></div>
+<div class="w-4 h-4 rounded-[4px] bg-primary/60 hover:scale-110 transition-transform cursor-pointer"></div>
+</div>
+<div class="flex flex-col gap-1.5">
+<div class="w-4 h-4 rounded-[4px] bg-primary shadow-[0_0_8px_rgba(0,74,198,0.4)] hover:scale-110 transition-transform cursor-pointer"></div>
+<div class="w-4 h-4 rounded-[4px] bg-primary/90 hover:scale-110 transition-transform cursor-pointer"></div>
+<div class="w-4 h-4 rounded-[4px] bg-primary/60 hover:scale-110 transition-transform cursor-pointer"></div>
+<div class="w-4 h-4 rounded-[4px] bg-primary/30 hover:scale-110 transition-transform cursor-pointer"></div>
+<div class="w-4 h-4 rounded-[4px] bg-black/5 border border-black/5 hover:scale-110 transition-transform cursor-pointer"></div>
+<div class="w-4 h-4 rounded-[4px] bg-black/5 border border-black/5 hover:scale-110 transition-transform cursor-pointer"></div>
+<div class="w-4 h-4 rounded-[4px] bg-primary/30 hover:scale-110 transition-transform cursor-pointer"></div>
+</div>
+<div class="flex flex-col gap-1.5">
+<div class="w-4 h-4 rounded-[4px] bg-black/5 border border-black/5 hover:scale-110 transition-transform cursor-pointer"></div>
+<div class="w-4 h-4 rounded-[4px] bg-primary/30 hover:scale-110 transition-transform cursor-pointer"></div>
+<div class="w-4 h-4 rounded-[4px] bg-primary/60 hover:scale-110 transition-transform cursor-pointer"></div>
+<div class="w-4 h-4 rounded-[4px] bg-primary/90 hover:scale-110 transition-transform cursor-pointer"></div>
+<div class="w-4 h-4 rounded-[4px] bg-primary shadow-[0_0_8px_rgba(0,74,198,0.4)] hover:scale-110 transition-transform cursor-pointer"></div>
+<div class="w-4 h-4 rounded-[4px] bg-primary/90 hover:scale-110 transition-transform cursor-pointer"></div>
+<div class="w-4 h-4 rounded-[4px] bg-primary/60 hover:scale-110 transition-transform cursor-pointer"></div>
+</div>
+<!-- Center empty space -->
+<div class="flex-1 flex items-center justify-center">
+<div class="px-4 py-2 bg-white/30 rounded-xl border border-white/40 backdrop-blur-sm">
+<span class="font-label-sm text-[12px] text-on-surface-variant/70 tracking-wide">[Calendar continuous scrolling area]</span>
+</div>
+</div>
+<div class="flex flex-col gap-1.5">
+<div class="w-4 h-4 rounded-[4px] bg-primary/60 hover:scale-110 transition-transform cursor-pointer"></div>
+<div class="w-4 h-4 rounded-[4px] bg-primary/90 hover:scale-110 transition-transform cursor-pointer"></div>
+<div class="w-4 h-4 rounded-[4px] bg-primary shadow-[0_0_8px_rgba(0,74,198,0.4)] hover:scale-110 transition-transform cursor-pointer"></div>
+<div class="w-4 h-4 rounded-[4px] bg-primary/90 hover:scale-110 transition-transform cursor-pointer"></div>
+<div class="w-4 h-4 rounded-[4px] bg-primary/30 hover:scale-110 transition-transform cursor-pointer"></div>
+<div class="w-4 h-4 rounded-[4px] bg-black/5 border border-black/5 hover:scale-110 transition-transform cursor-pointer"></div>
+<div class="w-4 h-4 rounded-[4px] bg-black/5 border border-black/5 hover:scale-110 transition-transform cursor-pointer"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div></main>
+</div>
+</body></html>
