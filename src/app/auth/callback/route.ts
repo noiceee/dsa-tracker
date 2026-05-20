@@ -5,6 +5,7 @@ import { cookies } from 'next/headers';
 export async function GET(request: Request) {
   const { searchParams, origin } = new URL(request.url);
   const code = searchParams.get('code');
+  const errorParam = searchParams.get('error');
   // Only allow relative redirects — prevent open redirect attacks
   const rawNext = searchParams.get('next') ?? '/dashboard';
   const next = rawNext.startsWith('/') && !rawNext.startsWith('//') ? rawNext : '/dashboard';
@@ -14,13 +15,30 @@ export async function GET(request: Request) {
   const forwardedProto = request.headers.get('x-forwarded-proto');
   const redirectOrigin = forwardedHost ? `${forwardedProto ?? 'https'}://${forwardedHost}` : origin;
 
+  const cookieStore = await cookies();
+  const supabase = createClient(cookieStore);
+
   if (code) {
-    const cookieStore = await cookies();
-    const supabase = createClient(cookieStore);
     const { error } = await supabase.auth.exchangeCodeForSession(code);
     if (!error) {
       return NextResponse.redirect(`${redirectOrigin}${next}`);
     }
+    
+    // If there's an error (e.g. flow_state_already_used due to double-firing), check if already logged in
+    const { data: { user } } = await supabase.auth.getUser();
+    if (user) {
+      return NextResponse.redirect(`${redirectOrigin}${next}`);
+    }
+  } else if (errorParam) {
+    // If Supabase redirected here directly with an error
+    const { data: { user } } = await supabase.auth.getUser();
+    if (user) {
+      return NextResponse.redirect(`${redirectOrigin}${next}`);
+    }
+    
+    // Forward the error if not logged in
+    const errorDesc = searchParams.get('error_description');
+    return NextResponse.redirect(`${redirectOrigin}/?error=${errorParam}${errorDesc ? `&error_description=${errorDesc}` : ''}`);
   }
 
   // return the user to an error page with instructions
