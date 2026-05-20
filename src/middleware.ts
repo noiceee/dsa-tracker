@@ -1,7 +1,15 @@
-import { type NextRequest } from 'next/server';
+import { type NextRequest, NextResponse } from 'next/server';
 import { updateSession } from '@/utils/supabase/middleware';
 
 export async function middleware(request: NextRequest) {
+  // If Supabase redirects to the Site URL (/) instead of /auth/callback during OAuth,
+  // we intercept the code parameter and redirect the user to the correct callback route.
+  if (request.nextUrl.pathname === '/' && request.nextUrl.searchParams.has('code')) {
+    const callbackUrl = request.nextUrl.clone();
+    callbackUrl.pathname = '/auth/callback';
+    return NextResponse.redirect(callbackUrl);
+  }
+
   const response = await updateSession(request);
   
   // Add Security Headers
