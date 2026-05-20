@@ -66,9 +66,10 @@ export default function RoadmapPage() {
           <p className="font-body-md text-body-md text-on-surface-variant">Structured learning modules to build your algorithmic foundation.</p>
         </div>
         <div className="bg-surface border border-outline-variant p-1 rounded-lg inline-flex shadow-sm">
-          <button onClick={() => dispatch(setPaceAndSync(3) as any)} className={`px-4 py-2 font-button-text text-button-text transition-colors rounded ${paceMonths === 3 ? "bg-surface-container-low text-primary shadow-sm" : "text-on-surface-variant hover:text-on-surface"}`}>3 Months</button>
-          <button onClick={() => dispatch(setPaceAndSync(6) as any)} className={`px-4 py-2 font-button-text text-button-text transition-colors rounded ${paceMonths === 6 ? "bg-surface-container-low text-primary shadow-sm" : "text-on-surface-variant hover:text-on-surface"}`}>6 Months</button>
-          <button onClick={() => dispatch(setPaceAndSync(12) as any)} className={`px-4 py-2 font-button-text text-button-text transition-colors rounded ${paceMonths === 12 ? "bg-surface-container-low text-primary shadow-sm" : "text-on-surface-variant hover:text-on-surface"}`}>1 Year</button>
+          <button onClick={() => dispatch(setPaceAndSync(3) as any)} className={`px-4 py-2 font-button-text text-button-text transition-colors rounded ${paceMonths === 3 ? "bg-primary text-on-primary shadow-sm" : "text-on-surface-variant hover:text-on-surface hover:bg-surface-container"}`}>3 Months</button>
+          <button onClick={() => dispatch(setPaceAndSync(4) as any)} className={`px-4 py-2 font-button-text text-button-text transition-colors rounded ${paceMonths === 4 ? "bg-primary text-on-primary shadow-sm" : "text-on-surface-variant hover:text-on-surface hover:bg-surface-container"}`}>4 Months</button>
+          <button onClick={() => dispatch(setPaceAndSync(6) as any)} className={`px-4 py-2 font-button-text text-button-text transition-colors rounded ${paceMonths === 6 ? "bg-primary text-on-primary shadow-sm" : "text-on-surface-variant hover:text-on-surface hover:bg-surface-container"}`}>6 Months</button>
+          <button onClick={() => dispatch(setPaceAndSync(12) as any)} className={`px-4 py-2 font-button-text text-button-text transition-colors rounded ${paceMonths === 12 ? "bg-primary text-on-primary shadow-sm" : "text-on-surface-variant hover:text-on-surface hover:bg-surface-container"}`}>1 Year</button>
         </div>
       </div>
 
